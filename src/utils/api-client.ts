@@ -119,6 +119,30 @@ export class ApiClient {
   }
 
   /**
+   * PATCH request
+   */
+  async patch<T>(path: string, body: unknown): Promise<T> {
+    const url = new URL(path, this.baseUrl);
+    const response = await fetch(url.toString(), {
+      method: 'PATCH',
+      headers: this.headers,
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new ApiError(
+        `API PATCH request failed: ${response.status} ${response.statusText}`,
+        response.status,
+        errorText
+      );
+    }
+
+    const data = await response.json();
+    return (data as any).data || data;
+  }
+
+  /**
    * DELETE request
    */
   async delete<T>(path: string): Promise<T> {

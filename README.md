@@ -1,6 +1,8 @@
 # Masumi Plugin for OpenClaw
 
-> **"Masumi for Every AI Agent"** - Zero-config blockchain payments for the AI economy
+**Enable your AI agent to accept blockchain payments in minutes**
+
+> Zero-config wallet generation • Cardano payments • Auto-registration • MIP-004 compliant
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Network: Cardano](https://img.shields.io/badge/Network-Cardano-blue.svg)](https://cardano.org)
@@ -8,28 +10,14 @@
 
 ---
 
-## The Problem
+## Features
 
-Thousands of AI agents on MoltBook and OpenClaw have:
-- ❌ No wallets
-- ❌ No identity
-- ❌ No way to transact
-
-Getting an agent to accept payments currently requires hours of manual setup.
-
-## The Solution
-
-```bash
-$ openclaw masumi enable
-✓ Wallet provisioned: addr1qx8...
-✓ Registered on Masumi: agent_abc123
-✓ Linked to MoltBook: @myagent
-✓ Ready to accept payments
-
-Your agent is now earning.
-```
-
-**One command. Zero configuration. Instant monetization.**
+- **Zero-Config Wallet Generation** - Auto-generates Cardano HD wallets (24-word mnemonic)
+- **Full Payment Lifecycle** - Create, monitor, submit results, get paid
+- **Production-Grade Security** - AES-256-GCM encryption, secure file permissions
+- **Event-Driven** - Real-time payment monitoring with event emitters
+- **Masumi-Compatible** - Uses same libraries as masumi-payment-service
+- **Well-Tested** - Comprehensive examples and testing guides
 
 ---
 
@@ -47,40 +35,119 @@ Your agent is now earning.
 
 ## Quick Start
 
-### Installation
+### 1. Install
 
 ```bash
-# From ClawHub
-openclaw plugins install masumi-payments
-
-# Or from npm
-npm install @masumi/openclaw-plugin
+git clone https://github.com/masumi-network/masumi-openclaw-plugin
+cd masumi-openclaw-plugin
+npm install
+npm run build
 ```
 
-### Enable (Zero Config)
+### 2. Generate Wallet
 
 ```bash
-# One command to enable everything
-openclaw masumi enable
-
-# Or with options
-openclaw masumi enable --name "MyAgent" --pricing basic
+# Generate a Cardano wallet for your agent
+tsx examples/wallet-generation.ts
 ```
 
-### Accept Payments
-
-Once enabled, your agent automatically responds to payment requests:
-
+Output:
 ```
-User: "Analyze this data for me" (paid request)
-Agent: "This analysis costs 1 ADA. Payment ID: abc123..."
-User: [pays]
-Agent: [executes work, submits result, gets paid]
+Wallet Generated:
+  Address: addr_test1qz8...
+  VKey: ed25519_vk1...
+  Mnemonic: abandon abandon ... art (24 words)
+
+IMPORTANT: Backup your mnemonic securely!
+Credentials saved to: ~/.openclaw/credentials/masumi/...
+```
+
+### 3. Configure
+
+```bash
+cp .env.example .env
+
+# Edit .env with your credentials:
+MASUMI_PAYMENT_API_KEY=your_key_here
+MASUMI_SELLER_VKEY=your_vkey_from_step_2
+MASUMI_AGENT_IDENTIFIER=agent_your_id
+MASUMI_ENCRYPTION_KEY=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+```
+
+### 4. Test Payments
+
+```bash
+# Test wallet balance
+tsx examples/payment-manager.ts
+
+# Create payment request
+tsx test-create-payment.ts
+
+# Monitor payments
+tsx test-monitor.ts
 ```
 
 ---
 
-## How It Works
+## Usage
+
+### Creating Payment Requests
+
+```typescript
+import { PaymentManager } from '@masumi/openclaw-plugin';
+
+const manager = new PaymentManager({
+  network: 'Preprod',
+  paymentServiceUrl: 'https://payment.masumi.network/api/v1',
+  paymentApiKey: process.env.MASUMI_PAYMENT_API_KEY,
+  sellerVkey: process.env.MASUMI_SELLER_VKEY,
+  agentIdentifier: process.env.MASUMI_AGENT_IDENTIFIER,
+});
+
+// Create payment request
+const payment = await manager.createPaymentRequest({
+  identifierFromPurchaser: 'abc123...', // From buyer
+  inputData: { task: 'analyze', dataset: 'sales_2024' },
+});
+
+console.log('Payment ID:', payment.blockchainIdentifier);
+```
+
+### Monitoring Payments
+
+```typescript
+// Listen for payment events
+manager.on('payment:funds_locked', async (payment) => {
+  console.log('Payment received! Doing work...');
+
+  // Execute your work
+  const result = await performAnalysis(payment);
+
+  // Submit result
+  await manager.submitResult(
+    payment.blockchainIdentifier,
+    JSON.stringify(result)
+  );
+});
+
+manager.on('payment:completed', (payment) => {
+  console.log('Payment completed! Funds in wallet.');
+});
+
+// Start monitoring (polls every 30 seconds)
+manager.startStatusMonitoring(30000);
+```
+
+### Checking Balance
+
+```typescript
+const balance = await manager.getWalletBalance();
+console.log('Balance:', parseInt(balance.ada) / 1_000_000, 'ADA');
+```
+
+---
+
+## Architecture
 
 ### x402 Payment Flow
 
@@ -117,234 +184,288 @@ When you run `openclaw masumi enable`, the plugin:
 
 | Document | Description |
 |----------|-------------|
-| [MASUMI_FOR_EVERY_AGENT.md](./MASUMI_FOR_EVERY_AGENT.md) | Vision and architecture |
-| [PRACTICAL_ROADMAP.md](./PRACTICAL_ROADMAP.md) | Implementation timeline |
-| [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) | Detailed technical plan |
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | System design |
+| [PAYMENT_MANAGER_GUIDE.md](./PAYMENT_MANAGER_GUIDE.md) | Complete PaymentManager API reference |
+| [TESTING_GUIDE.md](./TESTING_GUIDE.md) | Step-by-step testing with Preprod |
+| [WALLET_SOLUTION_DESIGN.md](./WALLET_SOLUTION_DESIGN.md) | Wallet generation architecture |
+| [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) | Current progress and roadmap |
 
 ---
 
-## Configuration
+## Current Status
 
-### Minimal (Recommended)
+### What's Working (40% Complete)
 
-```json
-{
-  "plugins": {
-    "masumi": {
-      "enabled": true
-    }
-  }
-}
-```
+| Component | Status |
+|-----------|--------|
+| **Wallet Generation** | 100% - HD wallet, mnemonic, address derivation |
+| **Encryption & Storage** | 100% - AES-256-GCM, secure file storage |
+| **PaymentManager** | 100% - Full payment lifecycle |
+| **Payment Monitoring** | 100% - Event-driven status tracking |
+| **RegistryManager** | In Progress |
+| **OpenClaw Tools** | In Progress |
+| **MoltBook Integration** | Planned |
 
-Everything else is auto-provisioned.
+### Coming Soon
 
-### Advanced
-
-```json
-{
-  "plugins": {
-    "masumi": {
-      "enabled": true,
-      "network": "Mainnet",
-      "pricing": {
-        "default": "basic",
-        "tools": {
-          "analyze_data": "premium",
-          "simple_query": "free"
-        }
-      },
-      "moltbook": {
-        "enabled": true,
-        "syncReputation": true
-      },
-      "erc8004": {
-        "enabled": true,
-        "ethWallet": "0x..."
-      }
-    }
-  }
-}
-```
+- RegistryManager - Agent registration & discovery
+- OpenClaw tools (`masumi_create_payment`, etc.)
+- Plugin entry point (`src/index.ts`)
+- Skills (`masumi-payments`, `masumi-discovery`)
+- Webhooks & Hooks
+- MoltBook connector
 
 ---
 
-## Available Tools
+## API Reference
 
-### Payment Tools
-
-| Tool | Description |
-|------|-------------|
-| `masumi_enable` | Enable Masumi (one-time setup) |
-| `masumi_create_payment` | Create a payment request |
-| `masumi_check_payment` | Check payment status |
-| `masumi_complete_payment` | Submit work results |
-| `masumi_wallet_balance` | Get wallet balance |
-
-### Registry Tools
-
-| Tool | Description |
-|------|-------------|
-| `masumi_list_agents` | Browse available agents |
-| `masumi_search_agents` | Search by capability |
-| `masumi_get_agent` | Get agent details |
-| `masumi_hire_agent` | Hire another agent |
-
-### Identity Tools
-
-| Tool | Description |
-|------|-------------|
-| `masumi_get_identity` | Get unified identity |
-| `masumi_link_moltbook` | Link MoltBook account |
-| `masumi_get_reputation` | Get aggregated reputation |
-
----
-
-## Skills
-
-The plugin includes skills that teach your agent how to use Masumi:
-
-### masumi-payments
-
-```markdown
-# In your agent's skills folder
-
-Teaches: How to accept and process payments
-Tools: masumi_create_payment, masumi_check_payment, masumi_complete_payment
-```
-
-### masumi-discovery
-
-```markdown
-Teaches: How to find and hire other agents
-Tools: masumi_list_agents, masumi_search_agents, masumi_hire_agent
-```
-
-### masumi-identity
-
-```markdown
-Teaches: How to manage unified identity and reputation
-Tools: masumi_get_identity, masumi_link_moltbook, masumi_get_reputation
-```
-
----
-
-## Integration Examples
-
-### As a Seller (Accept Payments)
+### PaymentManager
 
 ```typescript
-// Your agent automatically handles this with the plugin enabled
+// Create payment
+const payment = await manager.createPaymentRequest(params);
 
-// 1. User requests paid service
-// 2. Agent returns payment requirements
-// 3. User pays
-// 4. Agent executes work
-// 5. Agent submits result
-// 6. Funds unlock to your wallet
+// Check status
+const status = await manager.checkPaymentStatus(blockchainId);
+
+// Submit result
+await manager.submitResult(blockchainId, outputData);
+
+// Get balance
+const balance = await manager.getWalletBalance();
+
+// List history
+const { payments } = await manager.listPayments({ limit: 10 });
+
+// Authorize refund
+await manager.authorizeRefund(blockchainId);
+
+// Monitor automatically
+manager.startStatusMonitoring(30000);
 ```
 
-### As a Buyer (Hire Agents)
+### Wallet Generator
 
 ```typescript
-// Find an agent
-const agents = await masumi_search_agents({ query: "image generation" });
+import { generateWallet, restoreWallet } from '@masumi/openclaw-plugin';
 
-// Check reputation
-const agent = agents[0];
-console.log(`Reputation: ${agent.reputation}`);
+// Generate new wallet
+const wallet = await generateWallet('Preprod');
+console.log(wallet.address);  // addr_test1q...
+console.log(wallet.vkey);     // Payment key hash
+console.log(wallet.mnemonic); // 24 words
 
-// Hire the agent
-const result = await masumi_hire_agent({
-  agentId: agent.id,
-  input: { prompt: "A sunset over mountains" },
-  maxPayment: "5 ADA"
+// Restore from mnemonic
+const restored = await restoreWallet('word1 word2 ... word24', 'Preprod');
+```
+
+### Credential Storage
+
+```typescript
+import { saveCredentials, loadCredentials } from '@masumi/openclaw-plugin';
+
+// Save (encrypted)
+await saveCredentials({
+  agentIdentifier: 'agent_mybot',
+  network: 'Preprod',
+  walletAddress: wallet.address,
+  walletVkey: wallet.vkey,
+  mnemonic: wallet.mnemonic,
 });
-```
 
-### Cross-Platform Identity
-
-```typescript
-// Get unified identity
-const identity = await masumi_get_identity();
-
-console.log(`Masumi DID: ${identity.masumiDID}`);
-console.log(`MoltBook: ${identity.moltbookId}`);
-console.log(`ERC-8004: ${identity.erc8004TokenId}`);
-console.log(`Unified Reputation: ${identity.reputation}`);
+// Load (decrypted)
+const creds = await loadCredentials('agent_mybot', 'Preprod');
 ```
 
 ---
 
-## Why Masumi?
+## Testing
 
-### For Agent Developers
+See [TESTING_GUIDE.md](./TESTING_GUIDE.md) for complete instructions.
 
-- **Zero setup time** - From 0 to earning in 5 minutes
-- **No wallet management** - Auto-provisioned and secured
-- **Cross-platform identity** - One identity everywhere
-- **Aggregated reputation** - Trust score from all platforms
+### Quick Test
 
-### For Agent Users
+```bash
+# 1. Generate encryption key
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
-- **HTTP-native payments** - No special SDKs needed
-- **Transparent pricing** - 402 response tells you the cost
-- **Verified agents** - On-chain reputation you can trust
-- **Instant settlement** - No waiting for confirmations
+# 2. Set credentials in .env
+cat > .env << EOF
+MASUMI_PAYMENT_API_KEY=your_key
+MASUMI_SELLER_VKEY=your_vkey
+MASUMI_AGENT_IDENTIFIER=agent_id
+MASUMI_ENCRYPTION_KEY=generated_key
+EOF
 
-### For the Ecosystem
+# 3. Test balance
+tsx examples/payment-manager.ts
 
-- **More agents earning** - Lower barrier to monetization
-- **More transactions** - Frictionless payment flow
-- **Better discovery** - Unified registry across platforms
-- **Higher trust** - Aggregated reputation signals
+# 4. Create payment
+tsx test-create-payment.ts
+
+# 5. Monitor payments
+tsx test-monitor.ts
+```
+
+### Get Test ADA
+
+For Preprod testing:
+1. Go to https://docs.cardano.org/cardano-testnet/tools/faucet/
+2. Select "Preprod"
+3. Enter your wallet address (from Step 2 of Quick Start)
+4. Request test ADA
+
+---
+
+## Payment Flow
+
+```
+┌─────────┐                    ┌─────────┐                    ┌─────────┐
+│  Buyer  │                    │  Agent  │                    │ Masumi  │
+└────┬────┘                    └────┬────┘                    └────┬────┘
+     │                              │                              │
+     │  1. Request work             │                              │
+     ├─────────────────────────────►│                              │
+     │                              │                              │
+     │  2. Payment request          │  createPaymentRequest()      │
+     │◄─────────────────────────────┤─────────────────────────────►│
+     │    (blockchainIdentifier)    │                              │
+     │                              │                              │
+     │  3. Pay on-chain             │                              │
+     ├──────────────────────────────┴──────────────────────────────►
+     │                              │                              │
+     │                              │  4. Detect payment           │
+     │                              │◄─────────────────────────────┤
+     │                              │  (funds_locked event)        │
+     │                              │                              │
+     │                              │  5. Execute work             │
+     │                              ├──────┐                       │
+     │                              │      │                       │
+     │                              │◄─────┘                       │
+     │                              │                              │
+     │                              │  6. Submit result            │
+     │                              ├─────────────────────────────►│
+     │                              │  submitResult()              │
+     │                              │                              │
+     │  7. Receive result           │                              │
+     │◄─────────────────────────────┤                              │
+     │                              │                              │
+     │                              │  8. Funds unlocked           │
+     │                              │◄─────────────────────────────┤
+     │                              │  (completed event)           │
+     │                              │                              │
+```
+
+---
+
+## Technology Stack
+
+| Component | Technology |
+|-----------|-----------|
+| **Wallet Generation** | @meshsdk/core v1.7.9 |
+| **Cardano** | @emurgo/cardano-serialization-lib-nodejs v15.0.3 |
+| **Blockchain Provider** | @blockfrost/blockfrost-js v6.0.0 |
+| **Encryption** | AES-256-GCM (Node crypto) |
+| **Validation** | Zod v3.22.4 |
+| **Hashing** | MIP-004 compliant (SHA-256 + JCS) |
+| **Language** | TypeScript 5.3+ |
+
+### Security Features
+
+- 24-word BIP39 mnemonic generation
+- HD wallet derivation (BIP44)
+- AES-256-GCM encryption
+- Secure file permissions (600)
+- MIP-004 compliant hashing
+- No plaintext secrets in storage
 
 ---
 
 ## Roadmap
 
-| Phase | Timeline | Features |
-|-------|----------|----------|
-| **v1.0** | Week 1-2 | Zero-config provisioning, basic payments |
-| **v1.5** | Week 3-4 | x402 gateway, auto-settlement |
-| **v2.0** | Week 5-6 | Unified identity, reputation sync |
-| **v2.5** | Week 7-8 | ClawHub launch, documentation |
-| **v3.0** | Month 2+ | Cross-chain (ERC-8004), enterprise features |
+| Phase | Status | Features |
+|-------|--------|----------|
+| **Phase 1: Foundation** | Complete | Wallet generation, encryption, hashing |
+| **Phase 2: Core Managers** | 50% | PaymentManager (Complete), RegistryManager (In Progress) |
+| **Phase 3: Integration** | Planned | OpenClaw tools, RPC, webhooks |
+| **Phase 4: Advanced** | Planned | Skills, MoltBook, x402 gateway |
+
+See [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) for details.
 
 ---
 
-## Contributing
+## Development
 
-We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
-### Development
+### Build from Source
 
 ```bash
-# Clone
 git clone https://github.com/masumi-network/masumi-openclaw-plugin
 cd masumi-openclaw-plugin
-
-# Install
 npm install
-
-# Build
 npm run build
-
-# Test
-npm run test
-
-# Run locally
-npm run dev
 ```
+
+### Project Structure
+
+```
+src/
+├── managers/
+│   └── payment.ts          # PaymentManager (payment lifecycle)
+├── services/
+│   └── auto-provision.ts   # AutoProvisionService (wallet gen)
+├── utils/
+│   ├── wallet-generator.ts # Wallet generation (Mesh SDK)
+│   ├── encryption.ts       # AES-256-GCM encryption
+│   ├── credential-store.ts # Secure file storage
+│   ├── api-client.ts       # HTTP client with retry
+│   └── hashing.ts          # MIP-004 hashing
+├── types/
+│   ├── config.ts           # Configuration schemas
+│   └── payment.ts          # Payment types
+└── index.ts                # Main entry point
+
+examples/
+├── wallet-generation.ts    # Wallet generation examples
+└── payment-manager.ts      # Payment workflow examples
+```
+
+### Scripts
+
+```bash
+npm run build        # Compile TypeScript
+npm run watch        # Watch mode
+npm run lint         # Lint code
+npm run lint:fix     # Fix linting issues
+npm run clean        # Clean build artifacts
+```
+
+---
+
+## Troubleshooting
+
+### "agentIdentifier not configured"
+Set `MASUMI_AGENT_IDENTIFIER` in `.env` or provision agent first.
+
+### "401 Unauthorized"
+Check your `MASUMI_PAYMENT_API_KEY` is correct.
+
+### "sellerVkey not configured"
+Set `MASUMI_SELLER_VKEY` from your wallet's verification key.
+
+### "Payment not found"
+Call `checkPaymentStatus()` first to load the payment.
+
+### Wallet balance is 0
+Get test ADA from Cardano faucet: https://docs.cardano.org/cardano-testnet/tools/faucet/
+
+See [TESTING_GUIDE.md](./TESTING_GUIDE.md) for more help.
 
 ---
 
 ## Support
 
-- **Documentation**: [docs.masumi.network](https://docs.masumi.network)
-- **Discord**: [Masumi Network](https://discord.gg/masumi)
-- **GitHub Issues**: [Report bugs](https://github.com/masumi-network/masumi-openclaw-plugin/issues)
+- **Masumi Docs**: https://docs.masumi.network
+- **GitHub Issues**: https://github.com/masumi-network/masumi-openclaw-plugin/issues
+- **Cardano Developers**: https://developers.cardano.org
 
 ---
 
@@ -354,16 +475,31 @@ MIT License - see [LICENSE](./LICENSE)
 
 ---
 
-## Acknowledgments
+## Dependencies
 
-- **Sokosumi** - First Masumi marketplace, inspiration for zero-config UX
-- **x402 Protocol** - HTTP-native payment standard
-- **ERC-8004** - Trustless agent identity standard
-- **OpenClaw/MoltBot** - The platform making AI assistants accessible
-- **MoltBook** - AI social network for reputation
+- **@meshsdk/core** - Cardano wallet SDK
+- **@emurgo/cardano-serialization-lib-nodejs** - Cardano primitives
+- **@blockfrost/blockfrost-js** - Blockchain provider
+- **zod** - TypeScript schema validation
+- **canonicaljson** - JCS serialization for MIP-004
 
 ---
 
-*Built with ❤️ for the AI Agent Economy*
+## License
 
-*Masumi Network - January 2026*
+MIT
+
+---
+
+## Acknowledgments
+
+- **Masumi Network** - Decentralized AI agent payment protocol
+- **EMURGO** - Cardano serialization library
+- **Mesh SDK** - Cardano TypeScript SDK
+- **OpenClaw/MoltBot** - AI assistant platform
+
+---
+
+**Built for autonomous AI agents to accept blockchain payments**
+
+*Last Updated: January 31, 2026*

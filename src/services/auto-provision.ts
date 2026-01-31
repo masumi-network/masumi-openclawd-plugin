@@ -167,7 +167,7 @@ export class AutoProvisionService {
   }
 
   /**
-   * Step 3: Register agent on Masumi
+   * Step 3: Register agent on Masumi using RegistryManager
    */
   private async registerAgent(params: {
     identity: AgentIdentity;
@@ -175,29 +175,41 @@ export class AutoProvisionService {
     capabilities: string[];
     pricing: PricingConfig;
   }): Promise<{ agentIdentifier: string; state: string }> {
-    const payload = {
+    const { RegistryManager } = await import('../managers/registry');
+
+    const registry = new RegistryManager({
       network: this.config.network,
-      name: params.identity.name,
-      description: params.identity.description || 'Auto-provisioned OpenClaw agent with Masumi payments',
-      apiBaseUrl: 'https://api.example.com', // TODO: Get from OpenClaw context
-      Capability: {
-        name: params.capabilities.join(', '),
-        version: '1.0.0',
-      },
-      Author: {
-        name: 'OpenClaw Agent',
-        contactEmail: '',
-        organization: 'Masumi Network',
-      },
-      Pricing: params.pricing,
-    };
+      registryApiKey: this.config.registryApiKey || this.config.paymentApiKey || '',
+    });
 
-    const response = await this.registryClient.post<{
-      agentIdentifier: string;
-      state: string;
-    }>('/registry', payload);
+    try {
+      const agent = await registry.registerAgent({
+        network: this.config.network,
+        name: params.identity.name,
+        description: params.identity.description || 'Auto-provisioned OpenClaw agent with Masumi payments',
+        apiBaseUrl: 'https://api.example.com', // TODO: Get from OpenClaw context
+        Capability: {
+          name: params.capabilities.join(', '),
+          version: '1.0.0',
+        },
+        Author: {
+          name: 'OpenClaw Agent',
+          contactEmail: '',
+        },
+        Pricing: params.pricing,
+      });
 
-    return response;
+      console.log(`✓ Agent registered on Masumi network`);
+      console.log(`  Identifier: ${agent.agentIdentifier}`);
+      console.log(`  State: ${agent.state}`);
+
+      return {
+        agentIdentifier: agent.agentIdentifier,
+        state: agent.state,
+      };
+    } finally {
+      await registry.close();
+    }
   }
 
   /**
