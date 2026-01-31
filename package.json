@@ -1,0 +1,58 @@
+{
+  "name": "@masumi/openclaw-plugin",
+  "version": "1.0.0",
+  "description": "Zero-config Masumi payments plugin for OpenClaw - enabling AI agents to accept blockchain payments with one command",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "masumi",
+    "openclaw",
+    "blockchain",
+    "payments",
+    "ai-agents",
+    "cardano",
+    "web3",
+    "cryptocurrency"
+  ],
+  "author": "Masumi Network",
+  "license": "MIT",
+  "dependencies": {
+    "zod": "^3.22.4",
+    "node-fetch": "^3.3.2",
+    "canonicaljson": "^1.0.0",
+    "@meshsdk/core": "^1.7.9",
+    "@meshsdk/core-cst": "^1.9.0-beta.90",
+    "@emurgo/cardano-serialization-lib-nodejs": "^15.0.3",
+    "@blockfrost/blockfrost-js": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/node-fetch": "^2.6.11",
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.0",
+    "vitest": "^1.2.0",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0"
+  },
+  "peerDependencies": {
+    "openclaw": "^latest"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/masumi-network/openclaw-plugin"
+  }
+}
