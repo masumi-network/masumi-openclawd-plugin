@@ -54,6 +54,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/masumi-network/openclaw-plugin"
+    "url": "https://github.com/masumi-network/masumi-openclawd-plugin"
   }
 }

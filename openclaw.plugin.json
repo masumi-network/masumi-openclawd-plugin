@@ -6,7 +6,7 @@
   "author": "Masumi Network",
   "license": "MIT",
   "homepage": "https://masumi.network",
-  "repository": "https://github.com/masumi-network/openclaw-plugin",
+  "repository": "https://github.com/masumi-network/masumi-openclawd-plugin",
   "capabilities": {
     "tools": true,
     "rpc": true,

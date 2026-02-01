@@ -55,3 +55,6 @@ temp/
 
 # Debug
 .debug/
+
+# Documentation (not committed)
+references/
