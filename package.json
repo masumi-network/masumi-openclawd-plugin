@@ -1,7 +1,7 @@
 {
-  "name": "@masumi/openclaw-plugin",
+  "name": "@masumi/openclaw-skill",
   "version": "1.0.0",
-  "description": "Zero-config Masumi payments plugin for OpenClaw - enabling AI agents to accept blockchain payments with one command",
+  "description": "Zero-config Masumi payments skill for OpenClaw - enabling AI agents to accept blockchain payments with one command",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -54,6 +54,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/masumi-network/masumi-openclawd-plugin"
+    "url": "https://github.com/masumi-network/masumi-openclaw-skill.git"
   }
 }

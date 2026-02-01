@@ -360,7 +360,7 @@ The buyer needs to actually send ADA on-chain. Check the Cardano blockchain expl
 - **MIP-003 Standard**: https://docs.masumi.network/mips/_mip-003
 - **Cardano Faucet**: https://docs.cardano.org/cardano-testnet/tools/faucet/
 - **Kodosumi (Scaling)**: https://docs.kodosumi.io/
-- **GitHub Issues**: https://github.com/SarthiBorkar/Masumi-plugin/issues
+- **GitHub Issues**: https://github.com/masumi-network/masumi-openclaw-skill/issues
 
 ---
 
