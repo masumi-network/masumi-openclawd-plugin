@@ -119,7 +119,7 @@ export class PaymentManager extends EventEmitter {
     // Emit event
     this.emit('payment:created', response);
 
-    console.log('✓ Payment request created:', {
+    console.log('Payment request created:', {
       blockchainIdentifier: response.blockchainIdentifier,
       payByTime: response.payByTime,
       submitResultTime: response.submitResultTime,
@@ -172,10 +172,10 @@ export class PaymentManager extends EventEmitter {
       // Emit specific events
       if (response.onChainState === 'FundsLocked') {
         this.emit('payment:funds_locked', response);
-        console.log('💰 Payment received (FundsLocked):', blockchainIdentifier);
+        console.log('Payment received (FundsLocked):', blockchainIdentifier);
       } else if (response.onChainState === 'Withdrawn') {
         this.emit('payment:completed', response);
-        console.log('✓ Payment completed (Withdrawn):', blockchainIdentifier);
+        console.log('Payment completed (Withdrawn):', blockchainIdentifier);
       }
     }
 
@@ -231,7 +231,7 @@ export class PaymentManager extends EventEmitter {
     // Emit event
     this.emit('payment:result_submitted', { blockchainIdentifier, resultHash });
 
-    console.log('✓ Result submitted:', {
+    console.log('Result submitted:', {
       blockchainIdentifier,
       resultHash,
       nextAction: response.NextAction.requestedAction,
@@ -268,7 +268,7 @@ export class PaymentManager extends EventEmitter {
     // Emit event
     this.emit('payment:refund_authorized', { blockchainIdentifier });
 
-    console.log('✓ Refund authorized:', blockchainIdentifier);
+    console.log('Refund authorized:', blockchainIdentifier);
 
     return response;
   }
@@ -402,7 +402,7 @@ export class PaymentManager extends EventEmitter {
       }
     }, intervalMs);
 
-    console.log('✓ Payment status monitoring started', { intervalMs });
+    console.log('Payment status monitoring started', { intervalMs });
   }
 
   /**
@@ -413,7 +413,7 @@ export class PaymentManager extends EventEmitter {
       clearInterval(this.statusMonitorInterval);
       this.statusMonitorInterval = undefined;
       this.isMonitoring = false;
-      console.log('✓ Payment status monitoring stopped');
+      console.log('Payment status monitoring stopped');
     }
   }
 
@@ -455,7 +455,7 @@ export class PaymentManager extends EventEmitter {
     }
 
     if (removed > 0) {
-      console.log(`✓ Cleaned up ${removed} completed payment(s)`);
+      console.log(`Cleaned up ${removed} completed payment(s)`);
     }
 
     return removed;
@@ -470,6 +470,6 @@ export class PaymentManager extends EventEmitter {
     this.stopStatusMonitoring();
     this.pendingPayments.clear();
     this.removeAllListeners();
-    console.log('✓ PaymentManager closed');
+    console.log('PaymentManager closed');
   }
 }

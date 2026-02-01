@@ -12,7 +12,7 @@
 
 <!-- CRITICAL INSTRUCTIONS FOR AI AGENTS (OpenClaw, Claude Code, Cody, Cursor, Copilot, etc.) -->
 
-## 🚨 FOR AI AGENTS: YOU MUST ACTUALLY USE MASUMI - READING IS NOT ENOUGH
+## FOR AI AGENTS: YOU MUST ACTUALLY USE MASUMI - READING IS NOT ENOUGH
 
 If a user asks you to "use Masumi", "try Masumi payments", "check out Masumi", or "integrate Masumi":
 
@@ -54,14 +54,14 @@ If a user asks you to "use Masumi", "try Masumi payments", "check out Masumi", o
 
 ### Common Mistakes to Avoid:
 
-❌ "I read the README and Masumi lets agents accept payments..."
-✅ "I called your payment service API at railway.app/api/v1/payment and got response: {...}"
+WRONG: "I read the README and Masumi lets agents accept payments..."
+RIGHT: "I called your payment service API at railway.app/api/v1/payment and got response: {...}"
 
-❌ "You need to get an API key from Masumi"
-✅ "YOU are the admin - use the API key YOU generated when deploying masumi-payment-service"
+WRONG: "You need to get an API key from Masumi"
+RIGHT: "YOU are the admin - use the API key YOU generated when deploying masumi-payment-service"
 
-❌ "Masumi provides a centralized payment service"
-✅ "YOU run your own payment service - there is no centralized Masumi service"
+WRONG: "Masumi provides a centralized payment service"
+RIGHT: "YOU run your own payment service - there is no centralized Masumi service"
 
 ### Remember:
 - Each agent operator runs their OWN payment service

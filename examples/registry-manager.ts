@@ -61,7 +61,7 @@ async function example1_registerAgent() {
       tags: ['data', 'analysis', 'ai', 'visualization'],
     });
 
-    console.log('✓ Agent registered successfully!');
+    console.log('OK Agent registered successfully!');
     console.log('  Identifier:', agent.agentIdentifier);
     console.log('  State:', agent.state);
     console.log('  Network:', agent.network);
@@ -69,7 +69,7 @@ async function example1_registerAgent() {
 
     return agent;
   } catch (error: any) {
-    console.error('❌ Registration failed:', error.message);
+    console.error('ERROR Registration failed:', error.message);
     throw error;
   } finally {
     await registry.close();
@@ -87,7 +87,7 @@ async function example2_getAgent(agentIdentifier: string) {
   try {
     const agent = await registry.getAgent(agentIdentifier, config.network);
 
-    console.log('✓ Agent details:');
+    console.log('OK Agent details:');
     console.log('  Name:', agent.name);
     console.log('  Description:', agent.description);
     console.log('  State:', agent.state);
@@ -108,7 +108,7 @@ async function example2_getAgent(agentIdentifier: string) {
 
     return agent;
   } catch (error: any) {
-    console.error('❌ Failed to get agent:', error.message);
+    console.error('ERROR Failed to get agent:', error.message);
     throw error;
   } finally {
     await registry.close();
@@ -132,7 +132,7 @@ async function example3_searchAgents() {
       limit: 10,
     });
 
-    console.log(`✓ Found ${agents.length} agent(s):\n`);
+    console.log(`OK Found ${agents.length} agent(s):\n`);
 
     agents.forEach((agent, index) => {
       console.log(`${index + 1}. ${agent.name}`);
@@ -145,7 +145,7 @@ async function example3_searchAgents() {
 
     return agents;
   } catch (error: any) {
-    console.error('❌ Search failed:', error.message);
+    console.error('ERROR Search failed:', error.message);
     throw error;
   } finally {
     await registry.close();
@@ -163,7 +163,7 @@ async function example4_listAgents() {
   try {
     const agents = await registry.listAgents(config.network, 20);
 
-    console.log(`✓ Found ${agents.length} agent(s) on ${config.network}:\n`);
+    console.log(`OK Found ${agents.length} agent(s) on ${config.network}:\n`);
 
     agents.forEach((agent, index) => {
       console.log(`${index + 1}. ${agent.name} (${agent.state})`);
@@ -172,7 +172,7 @@ async function example4_listAgents() {
 
     return agents;
   } catch (error: any) {
-    console.error('❌ List failed:', error.message);
+    console.error('ERROR List failed:', error.message);
     throw error;
   } finally {
     await registry.close();
@@ -205,7 +205,7 @@ async function example5_updateAgent(agentIdentifier: string) {
       tags: ['data', 'analysis', 'ai', 'visualization', 'advanced'],
     });
 
-    console.log('✓ Agent updated successfully!');
+    console.log('OK Agent updated successfully!');
     console.log('  Identifier:', updatedAgent.agentIdentifier);
     console.log('  New Description:', updatedAgent.description);
     console.log('  New Pricing:', updatedAgent.Pricing.amounts?.[0].amount, 'lovelace');
@@ -213,7 +213,7 @@ async function example5_updateAgent(agentIdentifier: string) {
 
     return updatedAgent;
   } catch (error: any) {
-    console.error('❌ Update failed:', error.message);
+    console.error('ERROR Update failed:', error.message);
     throw error;
   } finally {
     await registry.close();
@@ -232,7 +232,7 @@ async function example6_toggleAgentState(agentIdentifier: string) {
     // Deactivate agent
     console.log('Deactivating agent...');
     let agent = await registry.deactivateAgent(agentIdentifier, config.network);
-    console.log('✓ Agent state:', agent.state);
+    console.log('OK Agent state:', agent.state);
 
     // Wait a bit
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -240,11 +240,11 @@ async function example6_toggleAgentState(agentIdentifier: string) {
     // Reactivate agent
     console.log('Reactivating agent...');
     agent = await registry.activateAgent(agentIdentifier, config.network);
-    console.log('✓ Agent state:', agent.state);
+    console.log('OK Agent state:', agent.state);
 
     return agent;
   } catch (error: any) {
-    console.error('❌ State change failed:', error.message);
+    console.error('ERROR State change failed:', error.message);
     throw error;
   } finally {
     await registry.close();
@@ -278,7 +278,7 @@ async function example7_eventDriven() {
   });
 
   registry.on('registry:error', (error) => {
-    console.error('❌ Registry error:', error.message);
+    console.error('ERROR Registry error:', error.message);
   });
 
   try {
@@ -316,7 +316,7 @@ async function example7_eventDriven() {
 
     return agent;
   } catch (error: any) {
-    console.error('❌ Event-driven test failed:', error.message);
+    console.error('ERROR Event-driven test failed:', error.message);
     throw error;
   } finally {
     await registry.close();
@@ -329,10 +329,10 @@ async function example7_eventDriven() {
 async function main() {
   console.log('RegistryManager Examples\n');
   console.log('Network:', config.network);
-  console.log('API Key:', config.registryApiKey ? '✓ Set' : '✗ Not set');
+  console.log('API Key:', config.registryApiKey ? 'OK Set' : 'MISSING Not set');
 
   if (!config.registryApiKey) {
-    console.error('\n❌ Error: MASUMI_PAYMENT_API_KEY not set in .env');
+    console.error('\nERROR Error: MASUMI_PAYMENT_API_KEY not set in .env');
     console.error('Please set your API key before running these examples.\n');
     process.exit(1);
   }
@@ -359,9 +359,9 @@ async function main() {
     // Example 7: Event-driven
     await example7_eventDriven();
 
-    console.log('\n✓ All examples completed successfully!\n');
+    console.log('\nOK All examples completed successfully!\n');
   } catch (error: any) {
-    console.error('\n❌ Examples failed:', error.message);
+    console.error('\nERROR Examples failed:', error.message);
     process.exit(1);
   }
 }

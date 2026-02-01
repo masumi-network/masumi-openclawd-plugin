@@ -25,7 +25,7 @@ function getEncryptionKey(): string {
 
   if (!key) {
     console.warn(
-      '⚠️  WARNING: MASUMI_ENCRYPTION_KEY not set! Using default key. ' +
+      'WARNING: MASUMI_ENCRYPTION_KEY not set! Using default key. ' +
       'This is INSECURE for production. Set MASUMI_ENCRYPTION_KEY in your environment.'
     );
     return 'default-encryption-key-change-me-in-production';
@@ -121,13 +121,13 @@ export function isEncryptionKeySecure(): boolean {
 
   // Check minimum length
   if (key.length < 32) {
-    console.warn('⚠️  WARNING: MASUMI_ENCRYPTION_KEY is too short (< 32 characters)');
+    console.warn('WARNING: MASUMI_ENCRYPTION_KEY is too short (< 32 characters)');
     return false;
   }
 
   // Check if it's the default key
   if (key.includes('default') || key.includes('change-me')) {
-    console.warn('⚠️  WARNING: MASUMI_ENCRYPTION_KEY appears to be a default value');
+    console.warn('WARNING: MASUMI_ENCRYPTION_KEY appears to be a default value');
     return false;
   }
 

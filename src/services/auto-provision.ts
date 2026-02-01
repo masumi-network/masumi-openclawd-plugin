@@ -153,11 +153,11 @@ export class AutoProvisionService {
     // Generate new wallet
     const wallet = await generateWallet(this.config.network);
 
-    console.log(`✓ Wallet generated for ${agentId}`);
+    console.log(`Wallet generated for ${agentId}`);
     console.log(`  Address: ${wallet.address}`);
     console.log(`  VKey: ${wallet.vkey}`);
     console.log(`  Network: ${wallet.network}`);
-    console.log(`  ⚠️  IMPORTANT: Backup your mnemonic securely!`);
+    console.log(`  IMPORTANT: Backup your mnemonic securely!`);
 
     return {
       address: wallet.address,
@@ -199,7 +199,7 @@ export class AutoProvisionService {
         Pricing: params.pricing,
       });
 
-      console.log(`✓ Agent registered on Masumi network`);
+      console.log(`Agent registered on Masumi network`);
       console.log(`  Identifier: ${agent.agentIdentifier}`);
       console.log(`  State: ${agent.state}`);
 
@@ -249,7 +249,7 @@ export class AutoProvisionService {
       registryUrl: `https://sokosumi.com/agents/${credentials.agentIdentifier}`,
     });
 
-    console.log(`✓ Credentials stored securely at: ${path}`);
+    console.log(`Credentials stored securely at: ${path}`);
     console.log(`  File permissions: 600 (owner read/write only)`);
     console.log(`  Mnemonic: Encrypted with AES-256-GCM`);
 

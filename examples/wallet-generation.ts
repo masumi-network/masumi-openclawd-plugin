@@ -18,23 +18,23 @@ import {
 import { Network } from '../src/types/config';
 
 async function example1_generateNewWallet() {
-  console.log('\n📝 Example 1: Generate New Wallet\n');
+  console.log('\n Example 1: Generate New Wallet\n');
 
   // Generate a new wallet for Preprod network
   const wallet = await generateWallet('Preprod');
 
-  console.log('✓ Wallet Generated:');
+  console.log('OK Wallet Generated:');
   console.log(`  Address: ${wallet.address}`);
   console.log(`  VKey: ${wallet.vkey}`);
   console.log(`  Network: ${wallet.network}`);
   console.log(`  Mnemonic: ${wallet.mnemonic}`);
-  console.log('\n⚠️  IMPORTANT: Backup your mnemonic securely!');
+  console.log('\nWARNING  IMPORTANT: Backup your mnemonic securely!');
 
   return wallet;
 }
 
 async function example2_restoreWallet() {
-  console.log('\n📝 Example 2: Restore Wallet from Mnemonic\n');
+  console.log('\n Example 2: Restore Wallet from Mnemonic\n');
 
   // Example mnemonic (24 words) - DO NOT USE THIS IN PRODUCTION!
   const exampleMnemonic =
@@ -45,7 +45,7 @@ async function example2_restoreWallet() {
   // Restore wallet
   const wallet = await restoreWallet(exampleMnemonic, 'Preprod');
 
-  console.log('✓ Wallet Restored:');
+  console.log('OK Wallet Restored:');
   console.log(`  Address: ${wallet.address}`);
   console.log(`  VKey: ${wallet.vkey}`);
 
@@ -53,7 +53,7 @@ async function example2_restoreWallet() {
 }
 
 async function example3_validateMnemonic() {
-  console.log('\n📝 Example 3: Validate Mnemonic\n');
+  console.log('\n Example 3: Validate Mnemonic\n');
 
   const validMnemonic =
     'abandon abandon abandon abandon abandon abandon abandon abandon ' +
@@ -67,7 +67,7 @@ async function example3_validateMnemonic() {
 }
 
 async function example4_storeCredentials() {
-  console.log('\n📝 Example 4: Store Credentials Securely\n');
+  console.log('\n Example 4: Store Credentials Securely\n');
 
   // Generate a wallet
   const wallet = await generateWallet('Preprod');
@@ -83,28 +83,28 @@ async function example4_storeCredentials() {
     registryUrl: 'https://sokosumi.com/agents/agent_example_123',
   });
 
-  console.log(`✓ Credentials saved to: ${path}`);
-  console.log('  Mnemonic encrypted: ✓');
+  console.log(`OK Credentials saved to: ${path}`);
+  console.log('  Mnemonic encrypted: OK');
   console.log('  File permissions: 600 (owner only)');
 
   return path;
 }
 
 async function example5_loadCredentials() {
-  console.log('\n📝 Example 5: Load Credentials\n');
+  console.log('\n Example 5: Load Credentials\n');
 
   // Check if credentials exist
   const exists = await credentialsExist('agent_example_123', 'Preprod');
 
   if (!exists) {
-    console.log('⚠️  Credentials not found. Run example 4 first.');
+    console.log('WARNING  Credentials not found. Run example 4 first.');
     return;
   }
 
   // Load credentials (mnemonic will be decrypted)
   const creds = await loadCredentials('agent_example_123', 'Preprod');
 
-  console.log('✓ Credentials loaded:');
+  console.log('OK Credentials loaded:');
   console.log(`  Agent ID: ${creds.agentIdentifier}`);
   console.log(`  Address: ${creds.walletAddress}`);
   console.log(`  VKey: ${creds.walletVkey}`);
@@ -114,7 +114,7 @@ async function example5_loadCredentials() {
 }
 
 async function example6_listAllCredentials() {
-  console.log('\n📝 Example 6: List All Stored Credentials\n');
+  console.log('\n Example 6: List All Stored Credentials\n');
 
   const allCreds = await listAllCredentials();
 
@@ -126,7 +126,7 @@ async function example6_listAllCredentials() {
 }
 
 async function example7_autoProvision() {
-  console.log('\n📝 Example 7: Full Auto-Provision Flow\n');
+  console.log('\n Example 7: Full Auto-Provision Flow\n');
 
   const { AutoProvisionService } = await import('../src/services/auto-provision');
 
@@ -155,13 +155,13 @@ async function example7_autoProvision() {
         pricingTier: 'basic',
       });
 
-      console.log('\n✓ Provision Complete:');
+      console.log('\nOK Provision Complete:');
       console.log(`  Agent ID: ${result.agentIdentifier}`);
       console.log(`  Wallet: ${result.walletAddress}`);
       console.log(`  Registry: ${result.registryUrl}`);
       console.log(`  Credentials: ${result.credentialsPath}`);
     } catch (error) {
-      console.error('⚠️  Provision failed (expected without API keys):', error);
+      console.error('WARNING  Provision failed (expected without API keys):', error);
       console.log('\nℹ️  Wallet generation works, but registry registration requires:');
       console.log('  1. Valid Masumi API key');
       console.log('  2. Network connectivity');
@@ -185,10 +185,10 @@ async function runAllExamples() {
     await example7_autoProvision();
 
     console.log('\n═══════════════════════════════════════════');
-    console.log('✓ All examples completed!');
+    console.log('OK All examples completed!');
     console.log('═══════════════════════════════════════════\n');
   } catch (error) {
-    console.error('\n❌ Error running examples:', error);
+    console.error('\nERROR Error running examples:', error);
     process.exit(1);
   }
 }

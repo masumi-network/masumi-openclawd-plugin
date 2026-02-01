@@ -25,7 +25,7 @@ const config: MasumiPluginConfig = {
  * Example 1: Create a payment request
  */
 async function example1_createPayment() {
-  console.log('\n📝 Example 1: Create Payment Request\n');
+  console.log('\n Example 1: Create Payment Request\n');
 
   const manager = new PaymentManager(config);
 
@@ -43,7 +43,7 @@ async function example1_createPayment() {
       metadata: 'Job ID: 42, Priority: high',
     });
 
-    console.log('✓ Payment created:');
+    console.log('OK Payment created:');
     console.log('  Blockchain ID:', payment.blockchainIdentifier);
     console.log('  Pay by:', new Date(payment.payByTime).toLocaleString());
     console.log('  Submit by:', new Date(payment.submitResultTime).toLocaleString());
@@ -63,14 +63,14 @@ async function example1_createPayment() {
  * Example 2: Check payment status
  */
 async function example2_checkStatus(blockchainIdentifier: string) {
-  console.log('\n📝 Example 2: Check Payment Status\n');
+  console.log('\n Example 2: Check Payment Status\n');
 
   const manager = new PaymentManager(config);
 
   try {
     const payment = await manager.checkPaymentStatus(blockchainIdentifier);
 
-    console.log('✓ Payment status:');
+    console.log('OK Payment status:');
     console.log('  Blockchain ID:', payment.blockchainIdentifier);
     console.log('  On-chain state:', payment.onChainState || 'Not yet on-chain');
     console.log('  Next action:', payment.NextAction.requestedAction);
@@ -95,7 +95,7 @@ async function example2_checkStatus(blockchainIdentifier: string) {
  * Example 3: Submit work result
  */
 async function example3_submitResult(blockchainIdentifier: string) {
-  console.log('\n📝 Example 3: Submit Work Result\n');
+  console.log('\n Example 3: Submit Work Result\n');
 
   const manager = new PaymentManager(config);
 
@@ -104,7 +104,7 @@ async function example3_submitResult(blockchainIdentifier: string) {
     const payment = await manager.checkPaymentStatus(blockchainIdentifier);
 
     if (payment.onChainState !== 'FundsLocked') {
-      console.log('⚠️  Payment not in FundsLocked state. Current state:', payment.onChainState);
+      console.log('WARNING  Payment not in FundsLocked state. Current state:', payment.onChainState);
       console.log('   Cannot submit result yet. Wait for buyer to pay.');
       await manager.close();
       return;
@@ -126,7 +126,7 @@ async function example3_submitResult(blockchainIdentifier: string) {
       JSON.stringify(result)
     );
 
-    console.log('✓ Result submitted:');
+    console.log('OK Result submitted:');
     console.log('  Result hash:', updated.NextAction.resultHash || updated.resultHash);
     console.log('  Next action:', updated.NextAction.requestedAction);
     console.log('  Unlock time:', new Date(updated.unlockTime).toLocaleString());
@@ -144,7 +144,7 @@ async function example3_submitResult(blockchainIdentifier: string) {
  * Example 4: Monitor payments with events
  */
 async function example4_monitorPayments() {
-  console.log('\n📝 Example 4: Monitor Payments with Events\n');
+  console.log('\n Example 4: Monitor Payments with Events\n');
 
   const manager = new PaymentManager(config);
 
@@ -162,7 +162,7 @@ async function example4_monitorPayments() {
   });
 
   manager.on('payment:funds_locked', (payment) => {
-    console.log('💰 Funds locked! Start work for:', payment.blockchainIdentifier);
+    console.log('PAYMENT Funds locked! Start work for:', payment.blockchainIdentifier);
 
     // In a real scenario, you would trigger your work here
     // For example:
@@ -177,17 +177,17 @@ async function example4_monitorPayments() {
   });
 
   manager.on('payment:completed', (payment) => {
-    console.log('✅ Payment completed:', payment.blockchainIdentifier);
+    console.log('SUCCESS Payment completed:', payment.blockchainIdentifier);
   });
 
   manager.on('payment:monitor_error', (data) => {
-    console.error('❌ Monitoring error:', data);
+    console.error('ERROR Monitoring error:', data);
   });
 
   // Start monitoring (polls every 30 seconds)
   manager.startStatusMonitoring(30000);
 
-  console.log('✓ Monitoring started (30s intervals)');
+  console.log('OK Monitoring started (30s intervals)');
   console.log('  Listening for payment events...');
   console.log('  Press Ctrl+C to stop\n');
 
@@ -205,14 +205,14 @@ async function example4_monitorPayments() {
  * Example 5: Get wallet balance
  */
 async function example5_getBalance() {
-  console.log('\n📝 Example 5: Get Wallet Balance\n');
+  console.log('\n Example 5: Get Wallet Balance\n');
 
   const manager = new PaymentManager(config);
 
   try {
     const balance = await manager.getWalletBalance();
 
-    console.log('✓ Wallet balance:');
+    console.log('OK Wallet balance:');
     console.log('  ADA:', balance.ada, 'lovelace');
 
     // Convert lovelace to ADA
@@ -241,7 +241,7 @@ async function example5_getBalance() {
  * Example 6: List payment history
  */
 async function example6_listPayments() {
-  console.log('\n📝 Example 6: List Payment History\n');
+  console.log('\n Example 6: List Payment History\n');
 
   const manager = new PaymentManager(config);
 
@@ -250,7 +250,7 @@ async function example6_listPayments() {
       limit: 10,
     });
 
-    console.log(`✓ Found ${payments.length} payment(s):\n`);
+    console.log(`OK Found ${payments.length} payment(s):\n`);
 
     payments.forEach((payment, index) => {
       console.log(`${index + 1}. ${payment.blockchainIdentifier}`);
@@ -276,7 +276,7 @@ async function example6_listPayments() {
  * Example 7: Full workflow (create -> monitor -> submit)
  */
 async function example7_fullWorkflow() {
-  console.log('\n📝 Example 7: Full Payment Workflow\n');
+  console.log('\n Example 7: Full Payment Workflow\n');
 
   const manager = new PaymentManager(config);
 
@@ -288,18 +288,18 @@ async function example7_fullWorkflow() {
       inputData: { task: 'demo_workflow' },
     });
 
-    console.log('✓ Payment created:', payment.blockchainIdentifier);
+    console.log('OK Payment created:', payment.blockchainIdentifier);
 
     // Step 2: Set up monitoring
     console.log('\nStep 2: Setting up event listeners...');
 
     manager.on('payment:funds_locked', async (lockedPayment) => {
-      console.log('\n💰 Payment received! Executing work...');
+      console.log('\nPAYMENT Payment received! Executing work...');
 
       // Simulate work
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      console.log('✓ Work completed. Submitting result...');
+      console.log('OK Work completed. Submitting result...');
 
       // Submit result
       await manager.submitResult(
@@ -307,21 +307,21 @@ async function example7_fullWorkflow() {
         JSON.stringify({ result: 'success', timestamp: Date.now() })
       );
 
-      console.log('✓ Result submitted. Waiting for unlock...');
+      console.log('OK Result submitted. Waiting for unlock...');
     });
 
     manager.on('payment:completed', (completedPayment) => {
-      console.log('\n✅ Payment completed!');
+      console.log('\nSUCCESS Payment completed!');
       console.log('   Funds unlocked and withdrawn');
       console.log('   Workflow complete!');
     });
 
     // Step 3: Start monitoring
-    console.log('✓ Event listeners ready');
+    console.log('OK Event listeners ready');
     console.log('\nStep 3: Starting payment monitor...');
     manager.startStatusMonitoring(10000); // Poll every 10 seconds
 
-    console.log('✓ Monitoring started');
+    console.log('OK Monitoring started');
     console.log('\n⏳ Waiting for buyer to pay...');
     console.log('   Blockchain ID:', payment.blockchainIdentifier);
     console.log('   Pay by:', new Date(payment.payByTime).toLocaleString());
@@ -352,7 +352,7 @@ async function runExamples() {
 
   // Check if API key is configured
   if (!process.env.MASUMI_PAYMENT_API_KEY) {
-    console.log('\n⚠️  MASUMI_PAYMENT_API_KEY not set!');
+    console.log('\nWARNING  MASUMI_PAYMENT_API_KEY not set!');
     console.log('   Set it in .env file or export it:');
     console.log('   export MASUMI_PAYMENT_API_KEY=your_key_here\n');
     console.log('   Examples will fail without valid credentials.\n');
@@ -368,10 +368,10 @@ async function runExamples() {
     // await example7_fullWorkflow(); // Runs indefinitely
 
     console.log('\n═══════════════════════════════════════════');
-    console.log('✓ Examples completed!');
+    console.log('OK Examples completed!');
     console.log('═══════════════════════════════════════════\n');
   } catch (error) {
-    console.error('\n❌ Error running examples:', error);
+    console.error('\nERROR Error running examples:', error);
     process.exit(1);
   }
 }
