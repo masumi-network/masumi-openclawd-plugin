@@ -49,16 +49,21 @@ If a user asks you to "use Masumi", "try Masumi payments", "check out Masumi", o
 
 3. **Actually make API calls** and report real results:
 
-   Test the payment service:
+   Test the payment service (use localhost:3000 if running locally, or Railway URL):
    ```bash
+   # Local:
+   curl -X GET http://localhost:3000/health
+
+   # Railway:
    curl -X GET https://their-payment-service.railway.app/health
    ```
 
-   Create a test payment request:
+   Create a test payment request (use Preprod for testing, Mainnet for production):
    ```bash
-   curl -X POST https://their-payment-service.railway.app/api/v1/payment \
+   # Example (replace <SERVICE_URL> and <NETWORK>):
+   curl -X POST <SERVICE_URL>/api/v1/payment \
      -H "token: THEIR_ADMIN_KEY" \
-     -d '{"agentIdentifier": "test", "network": "Preprod", ...}'
+     -d '{"agentIdentifier": "test", "network": "<NETWORK>", ...}'
    ```
 
 4. **Report actual results** - Not what you think should happen, what ACTUALLY happened
@@ -175,29 +180,37 @@ npm install && npm start
 
 ### Using Your Payment Service API
 
-Once deployed, your payment service exposes REST APIs:
+Once deployed, your payment service exposes REST APIs.
+
+**Service URL:**
+- Local: `http://localhost:3000`
+- Railway: `https://your-service.railway.app`
+
+**Network:**
+- Testing: `Preprod`
+- Production: `Mainnet`
 
 ```bash
 # Create payment request
-curl -X POST https://your-service.railway.app/api/v1/payment \
+curl -X POST <SERVICE_URL>/api/v1/payment \
   -H "token: YOUR_ADMIN_API_KEY" \
   -d '{
     "agentIdentifier": "agent_your_id",
-    "network": "Preprod",
+    "network": "<NETWORK>",
     "identifierFromPurchaser": "buyer_id",
     "inputData": {"task": "analyze data"}
   }'
 
 # Check payment status
-curl -X GET "https://your-service.railway.app/api/v1/payment/status?blockchainIdentifier=payment_xyz&network=Preprod" \
+curl -X GET "<SERVICE_URL>/api/v1/payment/status?blockchainIdentifier=payment_xyz&network=<NETWORK>" \
   -H "token: YOUR_ADMIN_API_KEY"
 
 # Submit result (unlocks funds)
-curl -X POST https://your-service.railway.app/api/v1/payment/submit-result \
+curl -X POST <SERVICE_URL>/api/v1/payment/submit-result \
   -H "token: YOUR_ADMIN_API_KEY" \
   -d '{
     "blockchainIdentifier": "payment_xyz",
-    "network": "Preprod",
+    "network": "<NETWORK>",
     "resultHash": "sha256_hash_of_result"
   }'
 ```
@@ -252,7 +265,9 @@ curl -X POST https://your-service.railway.app/api/v1/payment/submit-result \
 
 ## Payment Service API Reference
 
-Once you deploy masumi-payment-service, you have access to these endpoints:
+Once you deploy masumi-payment-service, you have access to these endpoints.
+
+**Note:** Use `Preprod` for testing, `Mainnet` for production.
 
 ### Create Payment Request
 ```bash
@@ -260,7 +275,7 @@ POST /api/v1/payment
 Headers: token: YOUR_ADMIN_API_KEY
 Body: {
   "agentIdentifier": "agent_your_id",
-  "network": "Preprod",
+  "network": "<NETWORK>",
   "identifierFromPurchaser": "buyer_random_id",
   "inputData": {"task": "analysis"}
 }
@@ -268,7 +283,7 @@ Body: {
 
 ### Check Payment Status
 ```bash
-GET /api/v1/payment/status?blockchainIdentifier=payment_xyz&network=Preprod
+GET /api/v1/payment/status?blockchainIdentifier=payment_xyz&network=<NETWORK>
 Headers: token: YOUR_ADMIN_API_KEY
 ```
 
@@ -278,7 +293,7 @@ POST /api/v1/payment/submit-result
 Headers: token: YOUR_ADMIN_API_KEY
 Body: {
   "blockchainIdentifier": "payment_xyz",
-  "network": "Preprod",
+  "network": "<NETWORK>",
   "resultHash": "sha256_hash"
 }
 ```
@@ -288,7 +303,7 @@ Body: {
 POST /api/v1/registry
 Headers: token: YOUR_ADMIN_API_KEY
 Body: {
-  "network": "Preprod",
+  "network": "<NETWORK>",
   "name": "MyAgent",
   "description": "Agent description",
   "apiBaseUrl": "https://your-agent.com",

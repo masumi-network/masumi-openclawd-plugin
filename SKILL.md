@@ -34,6 +34,22 @@ metadata: {"requires": {"bins": ["node", "npm"], "env": ["MASUMI_ADMIN_API_KEY"]
 
 ---
 
+## Configuration Choices
+
+Throughout this guide, you'll need to make these choices:
+
+**Service URL:**
+- `http://localhost:3000` - Run locally (default, AI can do this)
+- `https://your-service.railway.app` - Railway deployment (requires manual setup)
+
+**Network:**
+- `Preprod` - Testing with free test ADA (recommended for getting started)
+- `Mainnet` - Production with real ADA
+
+**AI Agent:** When you see `<SERVICE_URL>` or `<NETWORK>` in examples, ask the user which option they want or default to localhost + Preprod for testing.
+
+---
+
 ## What is Masumi?
 
 Masumi is a decentralized protocol for AI agent payments and identity. It lets agents collaborate seamlessly and monetize their services efficiently on the Cardano blockchain.
@@ -89,7 +105,9 @@ npm run build
 npm start
 ```
 
-Your payment service will be available at: `http://localhost:3000` (or your Railway URL)
+Your payment service will be available at:
+- Local: `http://localhost:3000`
+- Railway: `https://your-service.railway.app` (if deployed manually)
 
 ### Step 2: Set Up Your Wallet
 
@@ -101,20 +119,17 @@ Guide the human to:
 ```bash
 # Option 1: Use Masumi CLI
 npm install -g @masumi/cli
-masumi wallet generate --network Preprod
+masumi wallet generate --network <NETWORK>  # Preprod or Mainnet
 
 # Option 2: Use any Cardano wallet (Nami, Eternl, etc.)
 # Option 3: Generate programmatically with Mesh SDK
 ```
 
-2. **Fund the wallet with test ADA**:
-   - **Tell the human**: "Go to https://docs.cardano.org/cardano-testnet/tools/faucet/"
-   - **They must**:
-     - Select "Preprod" network
-     - Enter their wallet address
-     - Click "Request funds"
-     - Wait 1-2 minutes for ADA to arrive
-   - **You (AI agent) CANNOT do this** - humans must manually request from faucet
+2. **Fund the wallet**:
+   - **For Preprod (testing)**: Tell the human "Go to https://docs.cardano.org/cardano-testnet/tools/faucet/"
+     - They must: Select "Preprod" network, enter wallet address, request funds
+     - **You (AI agent) CANNOT do this** - humans must manually request from faucet
+   - **For Mainnet (production)**: User must fund wallet with real ADA (purchase from exchange)
 
 3. **Verify they have the wallet details**:
    - Ask: "Do you have your wallet address (addr_test1...)?"
@@ -136,10 +151,10 @@ The payment service needs a Blockfrost API key to query the Cardano blockchain.
 1. Go to https://blockfrost.io/
 2. Sign up for a free account
 3. Create a new project
-4. Select **"Cardano Preprod"** network
-5. Copy the API key (starts with `preprod...`)
+4. Select network: **"Cardano Preprod"** (testing) or **"Cardano Mainnet"** (production)
+5. Copy the API key (starts with `preprod...` or `mainnet...`)
 
-**Ask them**: "Do you have your Blockfrost API key for Preprod?"
+**Ask them**: "Do you have your Blockfrost API key for <NETWORK>?"
 
 Don't proceed until they confirm they have it.
 
@@ -151,7 +166,7 @@ Guide them to set these in their payment service (Railway dashboard or local `.e
 
 ```bash
 # In masumi-payment-service environment variables:
-CARDANO_NETWORK=Preprod
+CARDANO_NETWORK=<NETWORK>  # Preprod or Mainnet
 WALLET_MNEMONIC=<their 24-word mnemonic>
 ADMIN_API_KEY=<generate this below>
 DATABASE_URL=<Railway provides this automatically>
@@ -174,12 +189,15 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 Register the agent on the Masumi network:
 
+**Note:** Replace `<SERVICE_URL>` with `http://localhost:3000` (local) or `https://your-service.railway.app` (Railway)
+**Note:** Replace `<NETWORK>` with `Preprod` (testing) or `Mainnet` (production)
+
 ```bash
-curl -X POST https://your-payment-service.railway.app/api/v1/registry \
+curl -X POST <SERVICE_URL>/api/v1/registry \
   -H "Content-Type: application/json" \
   -H "token: YOUR_ADMIN_API_KEY" \
   -d '{
-    "network": "Preprod",
+    "network": "<NETWORK>",
     "name": "MyAIAgent",
     "description": "AI agent for data analysis",
     "apiBaseUrl": "https://my-agent-api.com",
@@ -225,9 +243,11 @@ import requests
 
 app = Flask(__name__)
 
-PAYMENT_SERVICE_URL = "https://your-payment-service.railway.app/api/v1"
+# Replace with your service URL (http://localhost:3000 or https://your-service.railway.app)
+PAYMENT_SERVICE_URL = "http://localhost:3000/api/v1"  # or Railway URL
 ADMIN_API_KEY = "your_admin_api_key"
 AGENT_ID = "agent_abc123xyz"
+NETWORK = "Preprod"  # or "Mainnet"
 
 @app.route('/execute', methods=['POST'])
 def execute_task():
@@ -241,7 +261,7 @@ def execute_task():
         headers={"token": ADMIN_API_KEY},
         json={
             "agentIdentifier": AGENT_ID,
-            "network": "Preprod",
+            "network": NETWORK,
             "identifierFromPurchaser": buyer_identifier,
             "inputData": task_input
         }
@@ -265,7 +285,7 @@ def check_payment(blockchain_id):
         headers={"token": ADMIN_API_KEY},
         params={
             "blockchainIdentifier": blockchain_id,
-            "network": "Preprod"
+            "network": NETWORK
         }
     )
 
@@ -281,7 +301,7 @@ def check_payment(blockchain_id):
             headers={"token": ADMIN_API_KEY},
             json={
                 "blockchainIdentifier": blockchain_id,
-                "network": "Preprod",
+                "network": NETWORK,
                 "resultHash": hash_result(result)
             }
         )
@@ -300,13 +320,15 @@ if __name__ == '__main__':
 
 **As a Seller (Your Agent):**
 
+**Note:** Replace `<SERVICE_URL>` with your service URL and `<NETWORK>` with your network choice.
+
 1. Create payment request:
 ```bash
-curl -X POST https://your-payment-service.railway.app/api/v1/payment \
+curl -X POST <SERVICE_URL>/api/v1/payment \
   -H "token: YOUR_ADMIN_API_KEY" \
   -d '{
     "agentIdentifier": "agent_abc123xyz",
-    "network": "Preprod",
+    "network": "<NETWORK>",
     "identifierFromPurchaser": "buyer_random_id",
     "inputData": {"task": "analyze data"}
   }'
@@ -314,17 +336,17 @@ curl -X POST https://your-payment-service.railway.app/api/v1/payment \
 
 2. Monitor payment status:
 ```bash
-curl -X GET "https://your-payment-service.railway.app/api/v1/payment/status?blockchainIdentifier=payment_xyz&network=Preprod" \
+curl -X GET "<SERVICE_URL>/api/v1/payment/status?blockchainIdentifier=payment_xyz&network=<NETWORK>" \
   -H "token: YOUR_ADMIN_API_KEY"
 ```
 
 3. When `onChainState` becomes `FundsLocked`, submit your result:
 ```bash
-curl -X POST https://your-payment-service.railway.app/api/v1/payment/submit-result \
+curl -X POST <SERVICE_URL>/api/v1/payment/submit-result \
   -H "token: YOUR_ADMIN_API_KEY" \
   -d '{
     "blockchainIdentifier": "payment_xyz",
-    "network": "Preprod",
+    "network": "<NETWORK>",
     "resultHash": "sha256_hash_of_result"
   }'
 ```
