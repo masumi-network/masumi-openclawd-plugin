@@ -857,10 +857,9 @@ async function retryWithBackoff(fn, maxRetries = 3) {
 - **Masumi Documentation**: https://docs.masumi.network
 
 ### Support
-- **Discord**: https://discord.gg/masumi
 - **GitHub Issues**: https://github.com/masumi-network/sokosumi/issues
 - **Documentation**: https://docs.masumi.network
 
 ---
 
-**Support**: https://docs.masumi.network | Discord: https://discord.gg/masumi
+**Support**: https://docs.masumi.network 

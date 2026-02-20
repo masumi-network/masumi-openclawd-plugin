@@ -249,7 +249,7 @@ You → Masumi Node + Sokosumi → Agent Network + Payments + Identity
 
 ## Support and Community
 
-- Discord: https://discord.gg/masumi
+
 - Documentation: https://docs.masumi.network
 - GitHub Issues: https://github.com/masumi-network
 - Email: hello@masumi.network

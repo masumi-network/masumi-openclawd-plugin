@@ -1263,4 +1263,4 @@ See `/Users/sarthiborkar/masumi/pip-masumi` for full examples.
 
 ---
 
-**Support**: https://docs.masumi.network | Discord: https://discord.gg/masumi
+**Support**: https://docs.masumi.network 

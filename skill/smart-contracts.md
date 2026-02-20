@@ -1112,10 +1112,9 @@ curl -H "project_id: YOUR_KEY" \
 - **Cardanoscan Explorer (Mainnet)**: https://cardanoscan.io/
 
 ### Support
-- **Discord**: https://discord.gg/masumi
 - **Documentation**: https://docs.masumi.network
 - **GitHub Issues**: https://github.com/masumi-network/masumi-smart-contracts/issues
 
 ---
 
-**Support**: https://docs.masumi.network | Discord: https://discord.gg/masumi
+**Support**: https://docs.masumi.network 

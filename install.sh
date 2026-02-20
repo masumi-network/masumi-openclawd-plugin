@@ -56,7 +56,6 @@ if [ -f "$TARGET_DIR/SKILL.md" ]; then
     echo "    - 'What is the MIP-003 standard?'"
     echo ""
     echo "📖 Learn more: https://docs.masumi.network"
-    echo "💬 Discord: https://discord.gg/masumi"
     echo ""
     echo "Happy building in the Agentic Economy! 🚀"
 else

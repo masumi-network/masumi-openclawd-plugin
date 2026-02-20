@@ -4,7 +4,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Masumi Network](https://img.shields.io/badge/Masumi-Network-blue)](https://docs.masumi.network)
-[![Discord](https://img.shields.io/discord/masumi)](https://discord.gg/masumi)
 
 A comprehensive skill for LLM-powered development tools (Claude Code, Cursor, Windsurf, etc.) that provides deep knowledge of the Masumi ecosystem for building, deploying, and monetizing AI agents.
 
@@ -147,9 +146,8 @@ Before using this skill, you should have:
 - **MIP-004**: Decision Logging Hash Format
 
 ### Community
-- **Discord**: https://discord.gg/masumi
 - **GitHub**: https://github.com/masumi-network
-- **Twitter/X**: [@MasumiNetwork](https://twitter.com/MasumiNetwork)
+- **x/X**: [@MasumiNetwork](https://x.com/MasumiNetwork)
 
 ## 🎯 Example Use Cases
 
@@ -252,8 +250,6 @@ Special thanks to:
 ### Documentation
 Read the skill files or visit https://docs.masumi.network
 
-### Community Support
-Join our Discord: https://discord.gg/masumi
 
 ### Issues
 Report bugs or request features: https://github.com/masumi-network/masumi-skills/issues

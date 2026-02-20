@@ -1108,11 +1108,7 @@ describe('Agentic Service API', () => {
 - **LangGraph**: https://langchain-ai.github.io/langgraph/
 - **PhiData**: https://docs.phidata.com/
 
-### Support
-- **Discord**: https://discord.gg/masumi
+
 - **Documentation**: https://docs.masumi.network
 - **GitHub Issues**: https://github.com/masumi-network/masumi-payment-service/issues
 
----
-
-**Support**: https://docs.masumi.network | Discord: https://discord.gg/masumi
