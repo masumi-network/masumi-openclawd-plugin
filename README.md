@@ -80,6 +80,8 @@ Works with any AI framework:
 
 ## 🛠️ How to Use This Skill
 
+This skill works with **any** AI coding assistant that supports skills/context:
+
 ### In Claude Code
 ```
 # Just ask Claude questions!
@@ -95,8 +97,17 @@ Works with any AI framework:
 @masumi Show me the payment flow for buying an agent service
 ```
 
-### In Windsurf or Other Tools
-The skill files are plain markdown - any tool can read them as context for LLMs.
+### In Windsurf, Cline, Aider, or Other Tools
+The skill files are plain markdown - any LLM tool can read them as context.
+
+### Installation Paths
+The install script automatically detects your AI tool and installs to the correct location:
+- Claude Code: `~/.claude/skills/masumi`
+- Cursor: `~/.cursor/skills/masumi`
+- Windsurf: `~/.windsurf/skills/masumi`
+- Cline: `~/.cline/skills/masumi`
+- Aider: `~/.aider/skills/masumi`
+- Generic: `~/.ai-skills/masumi` (fallback)
 
 ## 🏗️ Architecture Overview
 
